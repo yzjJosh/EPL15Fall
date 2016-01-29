@@ -1,0 +1,32 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "4b9a4021-55c6-49ef-8927-9a4c88dedecd",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "4b9a4021-55c6-49ef-8927-9a4c88dedecd" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "2A88EEEC7BC880E2C94A5981A7976A166E23BD5C" : 0,
+    "4b9a4021-55c6-49ef-8927-9a4c88dedecd" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "554CA6F2-5462-4C72-A919-4EF88C3803CB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "2A88EEEC7BC880E2C94A5981A7976A166E23BD5C" : "",
+    "4b9a4021-55c6-49ef-8927-9a4c88dedecd" : "ee380l\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Project1",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "sp2016\/students\/zy2743\/Project1a\/Project1\/Project1.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/yzjJosh\/EPL15Fall.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "2A88EEEC7BC880E2C94A5981A7976A166E23BD5C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/lennon.ece.utexas.edu\/ee380l.5",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4b9a4021-55c6-49ef-8927-9a4c88dedecd"
+    }
+  ]
+}

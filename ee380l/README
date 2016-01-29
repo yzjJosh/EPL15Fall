@@ -1,0 +1,116 @@
+This directory is a stub for creating the subversion repo administration files
+for an ECE class repository.
+
+If you are reading this, then you should know at least a little about 
+subversion. More information can be obtained at http://svnbook.red-bean.com/
+
+*** ATTENTION Course administrators (Teaching Assistants and Professors): ***
+Please refer to the README file contained in the instructor_resources
+subdirectory of the repository for your class. In that file you will find
+information concerning the administration of your class, including information
+about editing the files contained in this directory. This file is intended
+for LRC system administrators. By the time a course administrator reads this
+file, the work described below has almost certainly already been done. 
+***************************************************************************
+
+
+SECTION 1:
+*** How to deploy a fresh repository (from scratch). ***
+Warning: do not follow these instructions unless you are creating a brand new
+repository. If the course in question has used the subversion system in a 
+previous semester, then you should skip to Section 2 below.
+
+Step 1: Make a working copy of this stub directory on the svn server machine.
+It does not matter where the copy is located. You have perhaps already done
+this step. If not, close this file!
+
+Step 2: Edit the passwd.txt file contained in your working copy. Replace the
+line for admin with an appropriate htpasswd entry. You can create the entry 
+by executing "htpasswd -c passwd.txt <user>" from the command line (where
+<user> is the user id that will be assigned to the course administrator). While
+there's nothing especially wrong with using the username "admin", there's
+nothing pariticularly right with it either. 
+
+Step 3: Run svnadmin to create an empty repository in /var/svn/classes. 
+The command line is (simply enough), "svnadmin create /var/svn/classes/<course>"
+where <course> is the course number (e.g., "ee312'). 
+
+Step 4: Add your working copy of this stub to the repository you just created.
+Run "sudo svn import file:///var/svn/classes/<course> <working_path>". Where
+<working_path> is the pathname to the root level directory of the working
+copy you made of this stub. Note that the root level directory of the stub
+has two subdirectories in it ./admin and ./instructor_resources. If you
+have correctly performed this step, then you will receive a confirmation
+message from subversion indicating that you're at "revision 1". You can
+now delete the local working copy with "rm -f" (please don't delete this
+stub!).
+
+Step 5: Change the ownership of the svn repo you just created to www-data
+	"sudo chown -R www-data:www-data /var/svn/classes/<course>"
+
+Step 6: Checkout a copy of the admin directory from the new repo to a location
+where apache will be able to find the passwd.txt and authz.txt files. This
+location is most likely to be /etc/apache2/svn/<course>. The command:
+ "sudo -u www-data svn checkout file:///var/svn/classes/<course>/admin \
+	/etc/apache2/svn/<course>" should do the trick. Confirm that the 
+passwd.txt and authz.txt files are in the correct location.
+
+Step 7: Add the Location /<course> to apaches dav_svn.conf file. A stub for
+the new Location entry is provided in /etc/apache2/dav_svn.ECE_STUB. Simply
+append this stub to /etc/apache2/dav_svn.conf and then edit the file to 
+insert the correct course number.
+	sudo cat /etc/apache2/dav_svn.ECE_STUB >> /etc/apache2/dav_svn.conf
+	sudo vi /etc/apache2/dav_svn.conf
+
+Step 8: Restart apache "sudo /etc/init.d/apache2 restart"
+
+Step 9: Confirm that the repo is accessible to the course administrator and 
+send an email to the administrator that the repo is ready to go. Point a 
+browser at the URL http://<server>.ece.utexas.edu/<course>. You should be 
+prompted for a userID and password. Confirm the correct ID and password for 
+your course administrator. You should see a directory listing for the new repo
+you created. If so, congratulations, you're done. If not, I'll deny everything.
+
+
+***************************************************************************
+
+
+SECTION 2:
+*** How to reconfigure an existing repo for a new semester
+
+Step 1: Checkout a working copy of the repo's admin directory. You can
+make this copy on any machine that you'd like, but it's probably easiest to
+checkout the copy on the svn server machine, in which case:
+ "sudo svn checkout file:///var/svn/classes/<course>/admin ./<course>"
+should do the trick. Note, you can run this command and place your working
+copy in any directory you want. 
+
+Step 2: Replace the existing passwd.txt file with a fresh one. Don't worry, 
+the new course admin can recover the old file if he/she wants it back. Just
+blow the sucker away by executing "htpasswd -c passwd.txt <user>" where 
+<user> is the user id that will be assigned to the course administrator). While
+there's nothing especially wrong with using the username "admin", there's
+nothing pariticularly right with it either. 
+
+Step 3: Replace the existing auth.txt file with the copy from this stub. Again,
+don't worry, just blow the sucker away: "cp <pathtostub>/auth.txt ."
+
+Step 4: Commit your changes back to the repo.
+ "sudo svn commit -m 'prep for the new semester'"
+
+Step 5: Update the checked-out copy of the admin directory that apache uses
+for authentication and authorization. This location is most likely to be 
+/etc/apache2/svn/<course>. Just cd to the correct location and 
+ "sudo -u www-data svn update" 
+Confirm that the passwd.txt and authz.txt files are correct.
+
+Step 6: Confirm that the repo is accessible to the course administrator and 
+send an email to the administrator that the repo is ready to go. Point a 
+browser at the URL http://<server>.ece.utexas.edu/<course>. You should be 
+prompted for a userID and password. Confirm the correct ID and password for 
+your course administrator. You should see a directory listing for the repo. 
+If so, congratulations, you're done. If not, I'll deny everything.
+
+
+
+
