@@ -4,6 +4,7 @@
 #ifndef _Vector_h
 #define _Vector_h
 #include <cstdint>
+#include <stdexcept>
 
 namespace epl{
     
@@ -11,25 +12,25 @@ namespace epl{
     class vector {
         
     private:
-        T** data;
+        T* data;
         uint64_t length;
         uint64_t capacity;
         uint64_t start;
-        uint64_t const default_capacity = 8;
+        static uint64_t const default_capacity = 8;
         
-        void destroy(T** array, uint64_t const len, uint16_t const lo, uint64_t const cap){
+        void destroy(T* array, uint64_t const len, uint16_t const lo, uint64_t const cap){
             for(uint64_t i=0; i<len; i++)
-                delete array[getIndex(i, lo, cap)];
-            delete[] array;
+                array[getIndex(i, lo, cap)].~T();
+            ::operator delete (array);
         }
         
         void copy(vector<T> const & that){
             length = that.length;
             capacity = that.capacity;
-            data = new T*[capacity];
+            data = (T*)::operator new (capacity*sizeof(T));
             start = 0;
             for(uint64_t i=0; i<length; i++)
-                data[i] = new T(*that.data[getIndex(i, that.start, that.capacity)]);
+                new (data+i) T{that.data[getIndex(i, that.start, that.capacity)]};
         }
         
         void move(vector<T>&& tmp){
@@ -42,13 +43,13 @@ namespace epl{
         }
         
         void resize(void){
-            T** old_data = data;
+            T* old_data = data;
             uint64_t old_c = capacity;
             capacity *= 2;
-            data = new T*[capacity];
+            data = (T*)::operator new (capacity*sizeof(T));
             for(uint64_t i=0; i<length; i++)
-                data[i] = old_data[getIndex(i, start, old_c)];
-            delete[] old_data;
+                new (data+i) T{std::move(old_data[getIndex(i, start, old_c)])};
+            ::operator delete (old_data);
             start = 0;
         }
         
@@ -58,7 +59,7 @@ namespace epl{
         
     public:
         vector(void){
-            data = new T*[default_capacity];
+            data = (T*)::operator new (default_capacity*sizeof(T));
             length = 0;
             capacity = default_capacity;
             start = 0;
@@ -71,10 +72,10 @@ namespace epl{
             }
             capacity = n;
             length = n;
-            data = new T*[n];
+            data = (T*)::operator new (n*sizeof(T));
             start = 0;
             for(int i=0; i<n; i++)
-                data[i] = new T;
+                new (data+i) T;
         }
         
         vector(vector<T> const & that){ copy(that); }
@@ -103,44 +104,46 @@ namespace epl{
         
         T& operator[](uint64_t const k){
             if(k >= length) throw std::out_of_range{"Index out of bound: " + std::to_string(k)};
-            return *data[getIndex(k, start, capacity)];
+            return data[getIndex(k, start, capacity)];
         }
         
         const T& operator[](uint64_t const k) const{
             if(k >= length) throw std::out_of_range{"Index out of bound: " + std::to_string(k)};
-            return *data[getIndex(k, start, capacity)];
+            return data[getIndex(k, start, capacity)];
         }
         
         void push_back(T const & item){
+            T temp{item};
             if(length == capacity) resize();
-            data[getIndex(length++, start, capacity)] = new T{item};
+            new (data + getIndex(length++, start, capacity)) T{std::move(temp)};
         }
         
         void push_back(T&& item){
             if(length == capacity) resize();
-            data[getIndex(length++, start, capacity)] = new T{std::move(item)};
+            new (data + getIndex(length++, start, capacity)) T{std::move(item)};
         }
         
         void push_front(T const & item){
+            T temp{item};
             if(length == capacity) resize();
-            data[start = getIndex(-1, start, capacity)] = new T{item};
+            new (data + (start = getIndex(-1, start, capacity))) T{std::move(temp)};
             length ++;
         }
         
         void push_front(T&& item){
             if(length == capacity) resize();
-            data[start = getIndex(-1, start, capacity)] = new T{std::move(item)};
+            new (data + (start = getIndex(-1, start, capacity))) T{std::move(item)};
             length ++;
         }
         
         void pop_back(void){
             if(length == 0) throw std::out_of_range{"Unable to pop from empty vector!"};
-            delete data[getIndex(--length, start, capacity)];
+            data[getIndex(--length, start, capacity)].~T();
         }
         
         void pop_front(void){
             if(length == 0) throw std::out_of_range("Unable to pop from empty vector!");
-            delete data[start];
+            data[start].~T();
             start = getIndex(1, start, capacity);
             length--;
         }

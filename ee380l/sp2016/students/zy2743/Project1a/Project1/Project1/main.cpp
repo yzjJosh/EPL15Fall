@@ -79,6 +79,10 @@ int main(void) {
     q = q;
     for(int i=0; i<q.size(); i++)
         assert(q[i] == p[i]);
+    epl::vector<epl::vector<int>> vec{};
+    vec.push_front(epl::vector<int>{});
+    for(int i=0; i<100; i++)
+        vec.push_back(vec[0]);
     std::cout<<"pass!"<<std::endl;
     return 0;
 }

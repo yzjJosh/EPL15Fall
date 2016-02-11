@@ -5,9 +5,9 @@
 
 IFLAGS = 
 DFLAGS = 
-CXX = g++ --std=c++11
+CXX = g++-4.9 --std=c++11
 CC  = $(GCC)
-GCC = g++ --std=c++11
+GCC = g++-4.9 --std=c++11
 LD  = $(CXX)
 
 LIBS = 

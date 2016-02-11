@@ -2,10 +2,10 @@ GTEST_DIR = ../../../gtest
 GTEST_INC = $(GTEST_DIR)/include
 
 #choose based on system
-GTEST_LIB = $(GTEST_DIR)/lib/gtest64.a
+GTEST_LIB = $(GTEST_DIR)/lib/gtest_yosemite.a
 #GTEST_LIB = $(GTEST_DIR)/lib/gtest32.a
 
-CXX = g++
+CXX = g++-4.9
 CXXFLAGS = -g -I $(GTEST_INC) -std=c++11 -Wall -Werror -fmax-errors=1 -Wno-sign-compare
 DEFS?= -DPHASE_A
 
