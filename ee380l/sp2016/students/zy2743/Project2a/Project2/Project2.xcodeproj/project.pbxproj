@@ -7,7 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		03737E311C7FB4DE0051C76E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E301C7FB4DE0051C76E /* main.cpp */; };
+		035BF28F1C9DC73E006739DC /* Josh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035BF28D1C9DC73E006739DC /* Josh.cpp */; };
+		03737E501C7FB52E0051C76E /* Algae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E371C7FB52E0051C76E /* Algae.cpp */; };
+		03737E511C7FB52E0051C76E /* animals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E391C7FB52E0051C76E /* animals.cpp */; };
+		03737E521C7FB52E0051C76E /* Craig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E3C1C7FB52E0051C76E /* Craig.cpp */; };
+		03737E531C7FB52E0051C76E /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E3F1C7FB52E0051C76E /* Event.cpp */; };
+		03737E541C7FB52E0051C76E /* LifeForm-Craig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E421C7FB52E0051C76E /* LifeForm-Craig.cpp */; };
+		03737E551C7FB52E0051C76E /* LifeForm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E431C7FB52E0051C76E /* LifeForm.cpp */; };
+		03737E561C7FB52E0051C76E /* Params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E461C7FB52E0051C76E /* Params.cpp */; };
+		03737E571C7FB52E0051C76E /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E4E1C7FB52E0051C76E /* Window.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +31,34 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		035BF28D1C9DC73E006739DC /* Josh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Josh.cpp; path = ../../../Project2b/Josh.cpp; sourceTree = "<group>"; };
+		035BF28E1C9DC73E006739DC /* Josh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Josh.h; path = ../../../Project2b/Josh.h; sourceTree = "<group>"; };
 		03737E2D1C7FB4DE0051C76E /* Project2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Project2; sourceTree = BUILT_PRODUCTS_DIR; };
-		03737E301C7FB4DE0051C76E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		03737E371C7FB52E0051C76E /* Algae.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Algae.cpp; path = ../../Algae.cpp; sourceTree = "<group>"; };
+		03737E381C7FB52E0051C76E /* Algae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Algae.h; path = ../../Algae.h; sourceTree = "<group>"; };
+		03737E391C7FB52E0051C76E /* animals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = animals.cpp; path = ../../animals.cpp; sourceTree = "<group>"; };
+		03737E3A1C7FB52E0051C76E /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Color.h; path = ../../Color.h; sourceTree = "<group>"; };
+		03737E3B1C7FB52E0051C76E /* Cons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cons.h; path = ../../Cons.h; sourceTree = "<group>"; };
+		03737E3C1C7FB52E0051C76E /* Craig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Craig.cpp; path = ../../Craig.cpp; sourceTree = "<group>"; };
+		03737E3D1C7FB52E0051C76E /* Craig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Craig.h; path = ../../Craig.h; sourceTree = "<group>"; };
+		03737E3E1C7FB52E0051C76E /* CraigUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CraigUtils.h; path = ../../CraigUtils.h; sourceTree = "<group>"; };
+		03737E3F1C7FB52E0051C76E /* Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Event.cpp; path = ../../Event.cpp; sourceTree = "<group>"; };
+		03737E401C7FB52E0051C76E /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Event.h; path = ../../Event.h; sourceTree = "<group>"; };
+		03737E411C7FB52E0051C76E /* Init.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Init.h; path = ../../Init.h; sourceTree = "<group>"; };
+		03737E421C7FB52E0051C76E /* LifeForm-Craig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "LifeForm-Craig.cpp"; path = "../../LifeForm-Craig.cpp"; sourceTree = "<group>"; };
+		03737E431C7FB52E0051C76E /* LifeForm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LifeForm.cpp; path = ../../LifeForm.cpp; sourceTree = "<group>"; };
+		03737E441C7FB52E0051C76E /* LifeForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LifeForm.h; path = ../../LifeForm.h; sourceTree = "<group>"; };
+		03737E451C7FB52E0051C76E /* ObjInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObjInfo.h; path = ../../ObjInfo.h; sourceTree = "<group>"; };
+		03737E461C7FB52E0051C76E /* Params.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Params.cpp; path = ../../Params.cpp; sourceTree = "<group>"; };
+		03737E471C7FB52E0051C76E /* Params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Params.h; path = ../../Params.h; sourceTree = "<group>"; };
+		03737E481C7FB52E0051C76E /* Point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Point.h; path = ../../Point.h; sourceTree = "<group>"; };
+		03737E491C7FB52E0051C76E /* QuadTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QuadTree.h; path = ../../QuadTree.h; sourceTree = "<group>"; };
+		03737E4A1C7FB52E0051C76E /* Random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Random.h; path = ../../Random.h; sourceTree = "<group>"; };
+		03737E4B1C7FB52E0051C76E /* SimTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimTime.h; path = ../../SimTime.h; sourceTree = "<group>"; };
+		03737E4C1C7FB52E0051C76E /* SmartPointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmartPointer.h; path = ../../SmartPointer.h; sourceTree = "<group>"; };
+		03737E4D1C7FB52E0051C76E /* tokens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tokens.h; path = ../../tokens.h; sourceTree = "<group>"; };
+		03737E4E1C7FB52E0051C76E /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Window.cpp; path = ../../Window.cpp; sourceTree = "<group>"; };
+		03737E4F1C7FB52E0051C76E /* Window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Window.h; path = ../../Window.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +91,33 @@
 		03737E2F1C7FB4DE0051C76E /* Project2 */ = {
 			isa = PBXGroup;
 			children = (
-				03737E301C7FB4DE0051C76E /* main.cpp */,
+				035BF28D1C9DC73E006739DC /* Josh.cpp */,
+				035BF28E1C9DC73E006739DC /* Josh.h */,
+				03737E371C7FB52E0051C76E /* Algae.cpp */,
+				03737E381C7FB52E0051C76E /* Algae.h */,
+				03737E391C7FB52E0051C76E /* animals.cpp */,
+				03737E3A1C7FB52E0051C76E /* Color.h */,
+				03737E3B1C7FB52E0051C76E /* Cons.h */,
+				03737E3C1C7FB52E0051C76E /* Craig.cpp */,
+				03737E3D1C7FB52E0051C76E /* Craig.h */,
+				03737E3E1C7FB52E0051C76E /* CraigUtils.h */,
+				03737E3F1C7FB52E0051C76E /* Event.cpp */,
+				03737E401C7FB52E0051C76E /* Event.h */,
+				03737E411C7FB52E0051C76E /* Init.h */,
+				03737E421C7FB52E0051C76E /* LifeForm-Craig.cpp */,
+				03737E431C7FB52E0051C76E /* LifeForm.cpp */,
+				03737E441C7FB52E0051C76E /* LifeForm.h */,
+				03737E451C7FB52E0051C76E /* ObjInfo.h */,
+				03737E461C7FB52E0051C76E /* Params.cpp */,
+				03737E471C7FB52E0051C76E /* Params.h */,
+				03737E481C7FB52E0051C76E /* Point.h */,
+				03737E491C7FB52E0051C76E /* QuadTree.h */,
+				03737E4A1C7FB52E0051C76E /* Random.h */,
+				03737E4B1C7FB52E0051C76E /* SimTime.h */,
+				03737E4C1C7FB52E0051C76E /* SmartPointer.h */,
+				03737E4D1C7FB52E0051C76E /* tokens.h */,
+				03737E4E1C7FB52E0051C76E /* Window.cpp */,
+				03737E4F1C7FB52E0051C76E /* Window.h */,
 			);
 			path = Project2;
 			sourceTree = "<group>";
@@ -118,7 +178,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03737E311C7FB4DE0051C76E /* main.cpp in Sources */,
+				035BF28F1C9DC73E006739DC /* Josh.cpp in Sources */,
+				03737E541C7FB52E0051C76E /* LifeForm-Craig.cpp in Sources */,
+				03737E521C7FB52E0051C76E /* Craig.cpp in Sources */,
+				03737E501C7FB52E0051C76E /* Algae.cpp in Sources */,
+				03737E531C7FB52E0051C76E /* Event.cpp in Sources */,
+				03737E571C7FB52E0051C76E /* Window.cpp in Sources */,
+				03737E511C7FB52E0051C76E /* animals.cpp in Sources */,
+				03737E551C7FB52E0051C76E /* LifeForm.cpp in Sources */,
+				03737E561C7FB52E0051C76E /* Params.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,14 +275,40 @@
 		03737E351C7FB4DE0051C76E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				HEADER_SEARCH_PATHS = "/opt/local/include/**";
+				LIBRARY_SEARCH_PATHS = "/opt/local/lib/**";
+				OTHER_LDFLAGS = (
+					"-L/opt/local/lib",
+					"-Wl,",
+					"-headerpad_max_install_names",
+					"-lfltk",
+					"-lpthread",
+					"-framework",
+					Cocoa,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "/opt/local/include/**";
 			};
 			name = Debug;
 		};
 		03737E361C7FB4DE0051C76E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				HEADER_SEARCH_PATHS = "/opt/local/include/**";
+				LIBRARY_SEARCH_PATHS = "/opt/local/lib/**";
+				OTHER_LDFLAGS = (
+					"-L/opt/local/lib",
+					"-Wl,",
+					"-headerpad_max_install_names",
+					"-lfltk",
+					"-lpthread",
+					"-framework",
+					Cocoa,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "/opt/local/include/**";
 			};
 			name = Release;
 		};
@@ -237,6 +331,7 @@
 				03737E361C7FB4DE0051C76E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

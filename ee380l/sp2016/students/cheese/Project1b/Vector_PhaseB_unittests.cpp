@@ -36,7 +36,7 @@ namespace {
         static void reset() { moves = copies = destructions = constructions = 0; }
 
         Foo(void) { alive = true; ++constructions; }
-        ~Foo(void) { destructions += alive; }
+        ~Foo(void) { if(alive) destructions += 1; }
         Foo(const Foo&) noexcept { alive = true; ++copies; }
         Foo(Foo&& that) noexcept { that.alive = false; this->alive = true; ++moves; }
     };
