@@ -13,6 +13,9 @@
 using namespace std;
 using String = std::string;
 
+double const Josh::algea_speed_lo = 1.01;
+double const Josh::algea_speed_hi = 7.01;
+double const Josh::speed_delta = 0.00001;
 String const Josh::default_name = "Josh";
 Initializer<Josh> __Josh_initializer;
 
@@ -70,8 +73,8 @@ void Josh::spawn(void) {
 
 
 Color Josh::my_color(void) const {
-    if(health() >= 10.0) return BLUE;
-    else return ORANGE;
+   // if(health() >= 10.0 && name != default_name) return YELLOW;
+    return ORANGE;
 }
 
 SmartPointer<LifeForm> Josh::create(void) {
@@ -79,11 +82,17 @@ SmartPointer<LifeForm> Josh::create(void) {
 }
 
 bool Josh::isAlgae(const ObjInfo & info){
-    return info.species == "Algae" && info.their_speed == 0.0;
+    return info.species == "Algae" && info.their_speed == 0.0 && info.health < 3.0;
 }
 
 bool Josh::isFriend(const ObjInfo & info){
     return info.species == default_name || (info.species == "Algae" && (abs(info.their_speed-algea_speed_lo)<speed_delta || abs(info.their_speed-algea_speed_hi)<speed_delta));
+}
+
+double Josh::eatChance(double h1, double h2){
+    double c1 = eat_success_chance(h1, h2);
+    double c2 = eat_success_chance(h2, h1);
+    return c1*(1-c2);
 }
 
 void Josh::hunt(void) {
@@ -91,77 +100,89 @@ void Josh::hunt(void) {
     if (health() == 0.0) return; // we died
     
     double radius = fmin(fmax(40.0*health(), 30), 100);
-    ObjList prey = perceive(radius);
+    ObjList objs = perceive(radius);
     
     if(health() == 0.0) return;
     
     double next_hunt_time = 10.0;
-    int count_prey = 0;
+    ObjList preys;
+    ObjList hunters;
     int count_avoid_when_reproduce = 0;
     double weight[32];
     for(int i=0; i<32; i++) weight[i] = 0.0;
-    for (ObjList::iterator i = prey.begin(); i != prey.end(); ++i){
-        double c1 = eat_success_chance(health(), (*i).health);
-        double c2 = eat_success_chance((*i).health, health());
-        double chance = c1*(1-c2);
-        double die_chance = c2*(1-c1);
-        if (isAlgae(*i) || (!isFriend(*i) && chance > 0.7)) {
+    for (auto const& obj: objs){
+        double chance = eatChance(health(), obj.health);
+        double die_chance = eatChance(obj.health, health());
+        if (isAlgae(obj) || (!isFriend(obj) && chance > 0.7)) {
             for(int j=0; j<32; j++)
-                weight[j] += cos((*i).bearing - M_PI_4/4*j)/(*i).distance * (isAlgae(*i)? 1.0: chance);
-            count_prey ++;
-        }else if(isFriend(*i) || (!isAlgae(*i) && die_chance > 0.7)){
+                weight[j] += cos((obj).bearing - M_PI_4/4*j)/obj.distance * (isAlgae(obj)? 1.0: chance);
+            preys.push_back(obj);
+        }else if(isFriend(obj) || (!isAlgae(obj) && die_chance > 0.7)){
             for(int j=0; j<32; j++)
-                weight[j] -= cos((*i).bearing - M_PI_4/4*j)/(*i).distance * (isFriend(*i)? 1.0: die_chance/0.5);
-            if((*i).distance <= reproduce_dist) count_avoid_when_reproduce ++;
+                weight[j] -= cos(obj.bearing - M_PI_4/4*j)/obj.distance * (isFriend(obj)? 1.0: die_chance/0.5);
+            if(obj.distance <= reproduce_dist) count_avoid_when_reproduce ++;
+            if(!isFriend(obj)) hunters.push_back(obj);
         }
     }
-    if(count_prey > 0){
+    if(preys.size() > 0){
         double best_course = get_course();
-        double max_weight = std::numeric_limits<double>::min();
-        double average_weight = 0.0;
+        double max_weight = -MAXFLOAT;
         for(int i=0; i<32; i++){
-            average_weight += weight[i];
             if(weight[i] > max_weight){
                 best_course = M_PI_4/4*i;
                 max_weight = weight[i];
             }
         }
         double new_course = best_course;
-        double new_course_weight = std::numeric_limits<double>::min();
-        for (ObjList::iterator i = prey.begin(); i != prey.end(); ++i) {
-            double c1 = eat_success_chance(health(), (*i).health);
-            double c2 = eat_success_chance((*i).health, health());
-            double chance = c1*(1-c2);
-            if (isAlgae(*i) || (isFriend(*i) && chance > 0.7)) {
-                double cur_weight = cos((*i).bearing - best_course)/(*i).distance * (isAlgae(*i)? 1.0: chance);
-                if(cur_weight > new_course_weight){
-                    new_course_weight = cur_weight;
-                    new_course = (*i).bearing;
-                }
+        double new_course_weight = -MAXFLOAT;
+        for (auto const& prey: preys) {
+            double cur_weight = cos(prey.bearing - best_course)/prey.distance * (isAlgae(prey)? 1.0: eatChance(health(), prey.health));
+            if(cur_weight > new_course_weight){
+                new_course_weight = cur_weight;
+                new_course = prey.bearing;
             }
         }
+        
+        double max_distance = 0.0;
+        for (auto const& prey: preys)
+            if(abs(prey.bearing - new_course) <= M_PI_2/36 && prey.distance > max_distance)
+                max_distance = prey.distance;
+
         set_course(new_course);
         if(name == default_name)
             set_speed(7.0);
         else
             set_speed(algea_speed_hi);
         
-        next_hunt_time = fmin(radius*fmax(0.5, new_course_weight/average_weight)/get_speed(), next_hunt_time);
+        next_hunt_time = fmin(max_distance/get_speed()*1.1, next_hunt_time);
         no_target_count = 0;
     }else{
-        if(name == default_name)
-            set_speed(1.0);
-        else
-            set_speed(algea_speed_lo);
+        double new_course = get_course();
         if(++no_target_count == 3){
-            set_course(get_course() + M_PI_2);
+            new_course += M_PI_2;
             no_target_count = 0;
         }
+        const double dodge_distance = 20.0;
+        bool dodge = false;
+        for (auto const& hunter: hunters) {
+            if(hunter.distance < dodge_distance){
+                new_course = hunter.bearing + M_PI_2;
+                dodge = true;
+                break;
+            }
+        }
+        if(name == default_name)
+            set_speed(dodge? 7.0: 1.0);
+        else
+            set_speed(dodge? algea_speed_hi: algea_speed_lo);
+        set_course(new_course);
+        
+        next_hunt_time = dodge? dodge_distance/get_speed()*1.2: next_hunt_time;
     }
     SmartPointer<Josh> self = SmartPointer<Josh>(this);
     hunt_event = new Event(next_hunt_time, [self](void) { self->hunt(); });
     
-    if (health() >= 4.0 && !cheatAlgae && count_avoid_when_reproduce <= 2) spawn();
+    if (((health() >= 4.0 && !cheatAlgae) || (health() >= 100.0 && cheatAlgae)) && count_avoid_when_reproduce <= 2) spawn();
     if (health() >= 10.0 && cheatAlgae) name = "Algae";
     if (health() < 10.0 && cheatAlgae) name = default_name;
 }

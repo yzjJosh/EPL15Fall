@@ -7,17 +7,19 @@ private:
     void startup(void);
     void spawn(void);
     void hunt(void);
-    bool isAlgae(ObjInfo const&);
-    bool isFriend(ObjInfo const&);
     Event* hunt_event;
+    static bool isAlgae(ObjInfo const&);
+    static bool isFriend(ObjInfo const&);
+    static double eatChance(double, double);
     static SmartPointer<LifeForm> create(void);
     static void initialize(void);
+    
     int no_target_count;
     std::string name;
     bool cheatAlgae;
-    double const algea_speed_lo = 1.01;
-    double const algea_speed_hi = 7.01;
-    double const speed_delta = 0.00001;
+    static double const algea_speed_lo;
+    static double const algea_speed_hi;
+    static double const speed_delta;
     static const std::string default_name;
 public:
   Josh(void);
