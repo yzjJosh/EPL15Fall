@@ -76,7 +76,15 @@ Action zy2743::encounter(const ObjInfo& info){
         return LIFEFORM_IGNORE;
     }
     else {
-        hunt_event = new Event(0.0, [self](void) { self->hunt(); });
+        double die_chance = eatChance(info.health, health());
+        if(die_chance > 0.7){
+            set_course(info.bearing + M_PI);
+            set_speed(speed_hi);
+            avoid_cross_bound();
+            const double dodge_distance = 50.0;
+            hunt_event = new Event(fmin(dodge_distance/get_speed(), max_move_time()), [self](void){ self->hunt(); });
+        }else
+            hunt_event = new Event(0.0, [self](void) { self->hunt(); });
         return LIFEFORM_EAT;
     }
 }
@@ -101,7 +109,14 @@ bool zy2743::isAlgae(const ObjInfo & info){
 }
 
 bool zy2743::isFriend(const ObjInfo & info){
-    return info.species.substr(0, default_name.length()) == default_name || (info.species == "Algae" && (abs(info.their_speed-speed_lo)<speed_delta || abs(info.their_speed-speed_hi)<speed_delta));
+    bool is_self = info.species.substr(0, default_name.length()) == default_name || (info.species == "Algae" && (abs(info.their_speed-speed_lo)<speed_delta || abs(info.their_speed-speed_hi)<speed_delta));
+    static double last_time_see_enemy = 0.0;
+    const double threshold = 0.0;
+    bool is_ally = false;
+    if(Event::now() - last_time_see_enemy < threshold)
+        is_ally |= info.species == "YS8797" || info.species == "mq2373" || info.species == "yz9234";
+    if(!is_self && !is_ally) last_time_see_enemy = Event::now();
+    return is_self || is_ally;
 }
 
 double zy2743::eatChance(double h1, double h2){
@@ -114,11 +129,12 @@ double zy2743::max_move_time(void){
     double x_speed = get_speed() * cos(get_course());
     double y_speed = get_speed() * sin(get_course());
     double x_time = MAXFLOAT;
-    if(x_speed > 0.0) x_time = (right - pos.xpos)/x_speed;
-    else if(x_speed < 0.0) x_time = (left - pos.xpos)/x_speed;
+    double tolerance = 0.8;
+    if(x_speed > 0.0) x_time = (right - pos.xpos - tolerance)/x_speed;
+    else if(x_speed < 0.0) x_time = (left - pos.xpos + tolerance)/x_speed;
     double y_time = MAXFLOAT;
-    if(y_speed > 0.0) y_time = (top - pos.ypos)/y_speed;
-    else if(y_speed < 0.0) y_time = (bottom - pos.ypos)/y_speed;
+    if(y_speed > 0.0) y_time = (top - pos.ypos - tolerance)/y_speed;
+    else if(y_speed < 0.0) y_time = (bottom - pos.ypos + tolerance)/y_speed;
     return fmax(fmin(x_time, y_time), 0.0);
 }
 
@@ -172,7 +188,7 @@ void zy2743::update_pos(void){
 }
 
 void zy2743::avoid_cross_bound(void){
-    const double min_dis = 0.2;
+    const double min_dis = 1.0;
     if(top - pos.ypos < min_dis || pos.ypos - bottom < min_dis){
         set_course(2*M_PI - get_course());
     }
@@ -214,8 +230,7 @@ void zy2743::hunt(void) {
             if(!isFriend(obj)) hunters.push_back(obj);
         }
         update_bound(get_pos(obj));
-        if(isFriend(obj))
-            update_bound_from_friend(obj);
+        update_bound_from_friend(obj);
     }
     
     double next_hunt_time = 0.0;
@@ -251,7 +266,7 @@ void zy2743::hunt(void) {
     }else{
         double new_course = get_course();
         if(++no_target_count == 3){
-            new_course += M_PI_2;
+       //     new_course += M_PI_2;
             no_target_count = 0;
         }
         
@@ -259,7 +274,7 @@ void zy2743::hunt(void) {
         bool dodge = false;
         for (auto const& hunter: hunters) {
             if(hunter.distance < dodge_distance){
-                new_course = hunter.bearing + M_PI_2;
+                new_course = hunter.bearing + M_PI;
                 dodge = true;
                 break;
             }

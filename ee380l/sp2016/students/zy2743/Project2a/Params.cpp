@@ -121,7 +121,7 @@ const double max_speed = 10.0;
 const double max_perceive_range = 100.0;
 const double min_perceive_range = 2.0;
 
-const int grid_max = 500;
+const int grid_max = 5000;
 const int win_x_size = 500;
 const int win_y_size = 500;
 

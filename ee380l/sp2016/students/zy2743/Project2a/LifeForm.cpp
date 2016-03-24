@@ -119,6 +119,8 @@ void LifeForm::eat(SmartPointer<LifeForm> prey){
 
 void LifeForm::check_encounter(void){
     if(!is_alive) return;
+    for(auto& life: space.nearby(pos, encounter_distance * 2))
+        life->update_position();
     SmartPointer<LifeForm> candidate = space.closest(pos);
     if(candidate->update_time != Event::now())
         candidate->update_position();
