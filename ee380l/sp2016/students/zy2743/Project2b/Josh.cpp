@@ -13,8 +13,8 @@
 using namespace std;
 using String = std::string;
 
-double const Josh::algea_speed_lo = 1.01;
-double const Josh::algea_speed_hi = 7.01;
+double const Josh::algea_speed_lo = 1.02;
+double const Josh::algea_speed_hi = 7.02;
 double const Josh::speed_delta = 0.00001;
 String const Josh::default_name = "Josh";
 Initializer<Josh> __Josh_initializer;
@@ -73,8 +73,8 @@ void Josh::spawn(void) {
 
 
 Color Josh::my_color(void) const {
-   // if(health() >= 10.0 && name != default_name) return YELLOW;
-    return ORANGE;
+    // if(health() >= 10.0 && name != default_name) return YELLOW;
+    return RED;
 }
 
 SmartPointer<LifeForm> Josh::create(void) {
@@ -147,7 +147,7 @@ void Josh::hunt(void) {
         for (auto const& prey: preys)
             if(abs(prey.bearing - new_course) <= M_PI_2/36 && prey.distance > max_distance)
                 max_distance = prey.distance;
-
+        
         set_course(new_course);
         if(name == default_name)
             set_speed(7.0);

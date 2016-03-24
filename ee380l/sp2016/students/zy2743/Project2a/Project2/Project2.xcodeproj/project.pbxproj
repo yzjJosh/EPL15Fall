@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		035BF28F1C9DC73E006739DC /* Josh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035BF28D1C9DC73E006739DC /* Josh.cpp */; };
+		035BF28F1C9DC73E006739DC /* zy2743.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035BF28D1C9DC73E006739DC /* zy2743.cpp */; };
 		03737E501C7FB52E0051C76E /* Algae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E371C7FB52E0051C76E /* Algae.cpp */; };
 		03737E511C7FB52E0051C76E /* animals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E391C7FB52E0051C76E /* animals.cpp */; };
 		03737E521C7FB52E0051C76E /* Craig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E3C1C7FB52E0051C76E /* Craig.cpp */; };
@@ -31,8 +31,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		035BF28D1C9DC73E006739DC /* Josh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Josh.cpp; path = ../../../Project2b/Josh.cpp; sourceTree = "<group>"; };
-		035BF28E1C9DC73E006739DC /* Josh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Josh.h; path = ../../../Project2b/Josh.h; sourceTree = "<group>"; };
+		035BF28D1C9DC73E006739DC /* zy2743.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zy2743.cpp; path = ../../../Project2b/zy2743.cpp; sourceTree = "<group>"; };
+		035BF28E1C9DC73E006739DC /* zy2743.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zy2743.h; path = ../../../Project2b/zy2743.h; sourceTree = "<group>"; };
 		03737E2D1C7FB4DE0051C76E /* Project2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Project2; sourceTree = BUILT_PRODUCTS_DIR; };
 		03737E371C7FB52E0051C76E /* Algae.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Algae.cpp; path = ../../Algae.cpp; sourceTree = "<group>"; };
 		03737E381C7FB52E0051C76E /* Algae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Algae.h; path = ../../Algae.h; sourceTree = "<group>"; };
@@ -91,8 +91,8 @@
 		03737E2F1C7FB4DE0051C76E /* Project2 */ = {
 			isa = PBXGroup;
 			children = (
-				035BF28D1C9DC73E006739DC /* Josh.cpp */,
-				035BF28E1C9DC73E006739DC /* Josh.h */,
+				035BF28D1C9DC73E006739DC /* zy2743.cpp */,
+				035BF28E1C9DC73E006739DC /* zy2743.h */,
 				03737E371C7FB52E0051C76E /* Algae.cpp */,
 				03737E381C7FB52E0051C76E /* Algae.h */,
 				03737E391C7FB52E0051C76E /* animals.cpp */,
@@ -178,7 +178,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				035BF28F1C9DC73E006739DC /* Josh.cpp in Sources */,
+				035BF28F1C9DC73E006739DC /* zy2743.cpp in Sources */,
 				03737E541C7FB52E0051C76E /* LifeForm-Craig.cpp in Sources */,
 				03737E521C7FB52E0051C76E /* Craig.cpp in Sources */,
 				03737E501C7FB52E0051C76E /* Algae.cpp in Sources */,

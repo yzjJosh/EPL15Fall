@@ -22,12 +22,11 @@ private:
     static double const speed_delta;
     static const std::string default_name;
 public:
-  Josh(void);
-  ~Josh(void);
-  Color my_color(void) const override;   // defines LifeForm::my_color
-  virtual std::string species_name(void) const override;
-  virtual std::string player_name(void) const override;
-  virtual Action encounter(const ObjInfo&) override;
-  friend class Initializer<Josh>;
+    Josh(void);
+    ~Josh(void);
+    Color my_color(void) const override;   // defines LifeForm::my_color
+    virtual std::string species_name(void) const override;
+    virtual std::string player_name(void) const override;
+    virtual Action encounter(const ObjInfo&) override;
+    friend class Initializer<Josh>;
 };
-
