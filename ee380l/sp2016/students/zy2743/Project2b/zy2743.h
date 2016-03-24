@@ -23,7 +23,7 @@ private:
     
     static bool isAlgae(ObjInfo const&);
     static bool isFriend(ObjInfo const&);
-    static double eatChance(double, double);
+    static double eatChance(double, double, double, double);
     static SmartPointer<LifeForm> create(void);
     static void initialize(void);
     

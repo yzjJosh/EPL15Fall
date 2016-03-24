@@ -27,7 +27,7 @@ Initializer<zy2743> __zy2743_initializer;
  * you must wait until the object is actually alive
  */
 zy2743::zy2743(void) {
-    cheatAlgae = drand48() < 0.25? true: false;
+    cheatAlgae = drand48() < 0.30? true: false;
     isCheating = false;
     pos = Point(0.0, 0.0);
     pos_update_time = Event::now();
@@ -76,8 +76,8 @@ Action zy2743::encounter(const ObjInfo& info){
         return LIFEFORM_IGNORE;
     }
     else {
-        double die_chance = eatChance(info.health, health());
-        if(die_chance > 0.7){
+        double die_chance = eatChance(info.health, health(), info.their_speed, get_speed());
+        if(!isAlgae(info) && die_chance > 0.7){
             set_course(info.bearing + M_PI);
             set_speed(speed_hi);
             avoid_cross_bound();
@@ -119,10 +119,32 @@ bool zy2743::isFriend(const ObjInfo & info){
     return is_self || is_ally;
 }
 
-double zy2743::eatChance(double h1, double h2){
+double zy2743::eatChance(double h1, double h2, double s1, double s2){
     double c1 = eat_success_chance(h1, h2);
     double c2 = eat_success_chance(h2, h1);
-    return c1*(1-c2);
+    double chance_eat_directly = c1*(1-c2);
+    double chance_both_eat = (1-c1)*(1-c2);
+    double chance_win_when_both_eat = 0.0;
+    switch(encounter_strategy){
+        case EVEN_MONEY:
+            chance_win_when_both_eat = 0.5;
+            break;
+        case BIG_GUY_WINS:
+            chance_win_when_both_eat = h1>h2? 1.0: 0.0;
+            break;
+        case UNDERDOG_IS_HERE:
+            chance_win_when_both_eat = h1<h2? 1.0: 0.0;
+            break;
+        case FASTER_GUY_WINS:
+            chance_win_when_both_eat = s1 > s2? 1.0: 0.0;
+            break;
+        case SLOWER_GUY_WINS:
+            chance_win_when_both_eat = s1 < s2? 1.0: 0.0;
+            break;
+        default:
+            break;
+    }
+    return chance_eat_directly + chance_both_eat*chance_win_when_both_eat;
 }
 
 double zy2743::max_move_time(void){
@@ -217,8 +239,8 @@ void zy2743::hunt(void) {
     double weight[32];
     for(int i=0; i<32; i++) weight[i] = 0.0;
     for (auto const& obj: objs){
-        double chance = eatChance(health(), obj.health);
-        double die_chance = eatChance(obj.health, health());
+        double chance = eatChance(health(), obj.health, speed_hi, obj.their_speed);
+        double die_chance = eatChance(obj.health, health(), obj.their_speed, speed_hi);
         if (isAlgae(obj) || (!isFriend(obj) && chance > 0.7)) {
             for(int j=0; j<32; j++)
                 weight[j] += cos((obj).bearing - M_PI_4/4*j)/obj.distance * (isAlgae(obj)? 1.0: chance);
@@ -246,7 +268,8 @@ void zy2743::hunt(void) {
         double new_course = best_course;
         double new_course_weight = -MAXFLOAT;
         for (auto const& prey: preys) {
-            double cur_weight = cos(prey.bearing - best_course)/prey.distance * (isAlgae(prey)? 1.0: eatChance(health(), prey.health));
+            double chance = eatChance(health(), prey.health, speed_hi, prey.their_speed);
+            double cur_weight = cos(prey.bearing - best_course)/prey.distance * (isAlgae(prey)? 1.0: chance);
             if(cur_weight > new_course_weight){
                 new_course_weight = cur_weight;
                 new_course = prey.bearing;
