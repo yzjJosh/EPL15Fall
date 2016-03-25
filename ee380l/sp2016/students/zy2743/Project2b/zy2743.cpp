@@ -122,11 +122,12 @@ bool zy2743::isAlgae(const ObjInfo & info){
 }
 
 bool zy2743::isFriend(const ObjInfo & info){
-    bool is_self = info.species.substr(0, default_name.length()) == default_name || ((abs(info.their_speed-speed_lo)<speed_delta || abs(info.their_speed-speed_hi)<speed_delta));
+    bool is_self = ((abs(info.their_speed-speed_lo)<speed_delta || abs(info.their_speed-speed_hi)<speed_delta));
     const double threshold = 10000.0;
     bool is_ally = false;
     if(Event::now() < threshold)
-        is_ally |=   info.species == "mq2373" || info.species == "yz9234";
+        is_ally |=   info.species == "mq2373" || info.species == "yz9234" || info.species == "YS8797";
+ //   is_ally = false;
     return is_self || is_ally;
 }
 
@@ -162,7 +163,7 @@ double zy2743::max_move_time(void){
     double x_speed = get_speed() * cos(get_course());
     double y_speed = get_speed() * sin(get_course());
     double x_time = MAXFLOAT;
-    double tolerance = 0.8;
+    double tolerance = encounter_distance * 0.3;
     if(x_speed > 0.0) x_time = (right - pos.xpos - tolerance)/x_speed;
     else if(x_speed < 0.0) x_time = (left - pos.xpos + tolerance)/x_speed;
     double y_time = MAXFLOAT;
@@ -179,8 +180,8 @@ void zy2743::update_bound(const Point & p){
 }
 
 void zy2743::update_bound_from_friend(ObjInfo const& info){
-    if(info.species.substr(0, default_name.length()) != default_name)
-        return;
+    bool is_self = ((abs(info.their_speed-speed_lo)<speed_delta || abs(info.their_speed-speed_hi)<speed_delta));
+    if(!(is_self && info.species.substr(0, default_name.length()) == default_name)) return;
     String bounds = info.species.substr(default_name.length());
     istringstream iss{bounds};
     vector<String> tokens{istream_iterator<String>{iss}, istream_iterator<String>{}};
@@ -221,7 +222,7 @@ void zy2743::update_pos(void){
 }
 
 void zy2743::avoid_cross_bound(void){
-    const double min_dis = 1.0;
+    const double min_dis = 2.0;
     if(top - pos.ypos < min_dis || pos.ypos - bottom < min_dis){
         set_course(2*M_PI - get_course());
     }
@@ -254,11 +255,11 @@ void zy2743::hunt(void) {
         double die_chance = eatChance(obj.health, health(), obj.their_speed, speed_hi, false);
         if (isAlgae(obj) || (!isFriend(obj) && chance > 0.7)) {
             for(int j=0; j<32; j++)
-                weight[j] += cos((obj).bearing - M_PI_4/4*j)/obj.distance * (isAlgae(obj)? 1.0: chance);
+                weight[j] += cos((obj).bearing - M_PI_4/4*j)/fmax(obj.distance, encounter_distance) * (isAlgae(obj)? 1.0: chance);
             preys.push_back(obj);
         }else if(isFriend(obj) || (!isAlgae(obj) && die_chance > 0.7)){
             for(int j=0; j<32; j++)
-                weight[j] -= cos(obj.bearing - M_PI_4/4*j)/obj.distance * (isFriend(obj)? 1.0: die_chance/0.5);
+                weight[j] -= cos(obj.bearing - M_PI_4/4*j)/fmax(obj.distance, encounter_distance) * (isFriend(obj)? 1.0: die_chance/0.5);
             if(obj.distance <= reproduce_dist) count_avoid_when_reproduce ++;
             if(!isFriend(obj)) hunters.push_back(obj);
         }
@@ -280,7 +281,7 @@ void zy2743::hunt(void) {
         double new_course_weight = -MAXFLOAT;
         for (auto const& prey: preys) {
             double chance = eatChance(health(), prey.health, speed_hi, prey.their_speed, true);
-            double cur_weight = cos(prey.bearing - best_course)/prey.distance * (isAlgae(prey)? 1.0: chance);
+            double cur_weight = cos(prey.bearing - best_course)/fmax(prey.distance, encounter_distance) * (isAlgae(prey)? 1.0: chance);
             if(cur_weight > new_course_weight){
                 new_course_weight = cur_weight;
                 new_course = prey.bearing;
