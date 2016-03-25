@@ -11,19 +11,21 @@ private:
     static const std::string default_name;
     
     Event* hunt_event;
+    Event* stop_faking_enemy_event;
     bool cheatAlgae;
-    bool isCheating;
+    bool isFakingAlgae;
+    bool isFakingEnemy;
+    std::string fake_name;
     Point pos;
     double pos_update_time;
     double top;
     double bottom;
     double left;
     double right;
-    std::string name;
     
     static bool isAlgae(ObjInfo const&);
     static bool isFriend(ObjInfo const&);
-    static double eatChance(double, double, double, double);
+    static double eatChance(double, double, double, double, bool);
     static SmartPointer<LifeForm> create(void);
     static void initialize(void);
     
@@ -36,7 +38,6 @@ private:
     void avoid_cross_bound(void);
     double max_move_time(void);
     Point get_pos(ObjInfo const&);
-   // void generate
     
 public:
   zy2743(void);

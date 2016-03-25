@@ -13,9 +13,9 @@
 		03737E521C7FB52E0051C76E /* Craig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E3C1C7FB52E0051C76E /* Craig.cpp */; };
 		03737E531C7FB52E0051C76E /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E3F1C7FB52E0051C76E /* Event.cpp */; };
 		03737E541C7FB52E0051C76E /* LifeForm-Craig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E421C7FB52E0051C76E /* LifeForm-Craig.cpp */; };
-		03737E551C7FB52E0051C76E /* LifeForm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E431C7FB52E0051C76E /* LifeForm.cpp */; };
 		03737E561C7FB52E0051C76E /* Params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E461C7FB52E0051C76E /* Params.cpp */; };
 		03737E571C7FB52E0051C76E /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03737E4E1C7FB52E0051C76E /* Window.cpp */; };
+		03E3562B1CA51A3900F4686E /* LifeForm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03E3562A1CA51A3900F4686E /* LifeForm.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,7 +46,6 @@
 		03737E401C7FB52E0051C76E /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Event.h; path = ../../Event.h; sourceTree = "<group>"; };
 		03737E411C7FB52E0051C76E /* Init.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Init.h; path = ../../Init.h; sourceTree = "<group>"; };
 		03737E421C7FB52E0051C76E /* LifeForm-Craig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "LifeForm-Craig.cpp"; path = "../../LifeForm-Craig.cpp"; sourceTree = "<group>"; };
-		03737E431C7FB52E0051C76E /* LifeForm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LifeForm.cpp; path = ../../LifeForm.cpp; sourceTree = "<group>"; };
 		03737E441C7FB52E0051C76E /* LifeForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LifeForm.h; path = ../../LifeForm.h; sourceTree = "<group>"; };
 		03737E451C7FB52E0051C76E /* ObjInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObjInfo.h; path = ../../ObjInfo.h; sourceTree = "<group>"; };
 		03737E461C7FB52E0051C76E /* Params.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Params.cpp; path = ../../Params.cpp; sourceTree = "<group>"; };
@@ -59,6 +58,7 @@
 		03737E4D1C7FB52E0051C76E /* tokens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tokens.h; path = ../../tokens.h; sourceTree = "<group>"; };
 		03737E4E1C7FB52E0051C76E /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Window.cpp; path = ../../Window.cpp; sourceTree = "<group>"; };
 		03737E4F1C7FB52E0051C76E /* Window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Window.h; path = ../../Window.h; sourceTree = "<group>"; };
+		03E3562A1CA51A3900F4686E /* LifeForm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LifeForm.cpp; path = ../../../Project2b/LifeForm.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +91,7 @@
 		03737E2F1C7FB4DE0051C76E /* Project2 */ = {
 			isa = PBXGroup;
 			children = (
+				03E3562A1CA51A3900F4686E /* LifeForm.cpp */,
 				035BF28D1C9DC73E006739DC /* zy2743.cpp */,
 				035BF28E1C9DC73E006739DC /* zy2743.h */,
 				03737E371C7FB52E0051C76E /* Algae.cpp */,
@@ -105,7 +106,6 @@
 				03737E401C7FB52E0051C76E /* Event.h */,
 				03737E411C7FB52E0051C76E /* Init.h */,
 				03737E421C7FB52E0051C76E /* LifeForm-Craig.cpp */,
-				03737E431C7FB52E0051C76E /* LifeForm.cpp */,
 				03737E441C7FB52E0051C76E /* LifeForm.h */,
 				03737E451C7FB52E0051C76E /* ObjInfo.h */,
 				03737E461C7FB52E0051C76E /* Params.cpp */,
@@ -184,8 +184,8 @@
 				03737E501C7FB52E0051C76E /* Algae.cpp in Sources */,
 				03737E531C7FB52E0051C76E /* Event.cpp in Sources */,
 				03737E571C7FB52E0051C76E /* Window.cpp in Sources */,
+				03E3562B1CA51A3900F4686E /* LifeForm.cpp in Sources */,
 				03737E511C7FB52E0051C76E /* animals.cpp in Sources */,
-				03737E551C7FB52E0051C76E /* LifeForm.cpp in Sources */,
 				03737E561C7FB52E0051C76E /* Params.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

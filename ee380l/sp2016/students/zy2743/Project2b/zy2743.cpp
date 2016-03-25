@@ -28,7 +28,11 @@ Initializer<zy2743> __zy2743_initializer;
  */
 zy2743::zy2743(void) {
     cheatAlgae = drand48() < 0.30? true: false;
-    isCheating = false;
+    isFakingAlgae = false;
+    isFakingEnemy = false;
+    stop_faking_enemy_event = nullptr;
+    hunt_event = nullptr;
+    fake_name = "";
     pos = Point(0.0, 0.0);
     pos_update_time = Event::now();
     top = 0.0;
@@ -47,11 +51,13 @@ String zy2743::player_name(void) const{
 }
 
 String zy2743::species_name(void) const{
-    if(isCheating)
+    if(isFakingEnemy)
+        return fake_name;
+    if(isFakingAlgae)
         return "Algae";
     else
         return default_name + to_string(pos_update_time) + " " + to_string(pos.xpos) + " " + to_string(pos.ypos) + " "
-                + to_string(top) + " " + to_string(bottom) + " " + to_string(left) + " " + to_string(right);
+            + to_string(top) + " " + to_string(bottom) + " " + to_string(left) + " " + to_string(right);
 }
 
 SmartPointer<LifeForm> zy2743::create(void) {
@@ -75,15 +81,23 @@ Action zy2743::encounter(const ObjInfo& info){
         return LIFEFORM_IGNORE;
     }
     else {
-        double die_chance = eatChance(info.health, health(), info.their_speed, get_speed());
-        if(!isAlgae(info) && die_chance > 0.7){
-            set_course(info.bearing + M_PI);
-            set_speed(speed_hi);
-            avoid_cross_bound();
-            const double dodge_distance = 50.0;
-            hunt_event = new Event(fmin(dodge_distance/get_speed(), max_move_time()), [self](void){ self->hunt(); });
-        }else
-            hunt_event = new Event(0.0, [self](void) { self->hunt(); });
+        double next_hunt_time = 0.0;
+        if(!isAlgae(info)){
+            isFakingEnemy = true;
+            fake_name = info.species;
+            if(stop_faking_enemy_event != nullptr) stop_faking_enemy_event->cancel();
+            stop_faking_enemy_event = new Event(0.0, [self](void){ self->isFakingEnemy = false; self->stop_faking_enemy_event = nullptr;});
+            
+            double die_chance = eatChance(info.health, health(), info.their_speed, get_speed(), false);
+            if(die_chance > 0.7){
+                set_course(info.bearing + M_PI);
+                set_speed(speed_hi);
+                avoid_cross_bound();
+                const double dodge_distance = 50.0;
+                next_hunt_time = fmin(dodge_distance/get_speed(), max_move_time());
+            }
+        }
+        hunt_event = new Event(next_hunt_time, [self](void) { self->hunt(); });
         return LIFEFORM_EAT;
     }
 }
@@ -99,7 +113,7 @@ void zy2743::spawn(void) {
 }
 
 Color zy2743::my_color(void) const {
-    if(isCheating) return YELLOW;
+   // if(isFakingAlgae) return YELLOW;
     return ORANGE;
 }
 
@@ -108,21 +122,19 @@ bool zy2743::isAlgae(const ObjInfo & info){
 }
 
 bool zy2743::isFriend(const ObjInfo & info){
-    bool is_self = info.species.substr(0, default_name.length()) == default_name || (info.species == "Algae" && (abs(info.their_speed-speed_lo)<speed_delta || abs(info.their_speed-speed_hi)<speed_delta));
-    static double last_time_see_enemy = 0.0;
-    const double threshold = 0.0;
+    bool is_self = info.species.substr(0, default_name.length()) == default_name || ((abs(info.their_speed-speed_lo)<speed_delta || abs(info.their_speed-speed_hi)<speed_delta));
+    const double threshold = 10000.0;
     bool is_ally = false;
-    if(Event::now() - last_time_see_enemy < threshold)
-        is_ally |= info.species == "YS8797" || info.species == "mq2373" || info.species == "yz9234";
-    if(!is_self && !is_ally) last_time_see_enemy = Event::now();
+    if(Event::now() < threshold)
+        is_ally |=   info.species == "mq2373" || info.species == "yz9234";
     return is_self || is_ally;
 }
 
-double zy2743::eatChance(double h1, double h2, double s1, double s2){
+double zy2743::eatChance(double h1, double h2, double s1, double s2, bool fake){
     double c1 = eat_success_chance(h1, h2);
     double c2 = eat_success_chance(h2, h1);
-    double chance_eat_directly = c1*(1-c2);
-    double chance_both_eat = (1-c1)*(1-c2);
+    double chance_eat_directly = c1*(1-c2*(fake? 0.5: 1.0));
+    double chance_both_eat = c1*c2*(fake? 0.5: 1.0);
     double chance_win_when_both_eat = 0.0;
     switch(encounter_strategy){
         case EVEN_MONEY:
@@ -238,8 +250,8 @@ void zy2743::hunt(void) {
     double weight[32];
     for(int i=0; i<32; i++) weight[i] = 0.0;
     for (auto const& obj: objs){
-        double chance = eatChance(health(), obj.health, speed_hi, obj.their_speed);
-        double die_chance = eatChance(obj.health, health(), obj.their_speed, speed_hi);
+        double chance = eatChance(health(), obj.health, speed_hi, obj.their_speed, true);
+        double die_chance = eatChance(obj.health, health(), obj.their_speed, speed_hi, false);
         if (isAlgae(obj) || (!isFriend(obj) && chance > 0.7)) {
             for(int j=0; j<32; j++)
                 weight[j] += cos((obj).bearing - M_PI_4/4*j)/obj.distance * (isAlgae(obj)? 1.0: chance);
@@ -267,7 +279,7 @@ void zy2743::hunt(void) {
         double new_course = best_course;
         double new_course_weight = -MAXFLOAT;
         for (auto const& prey: preys) {
-            double chance = eatChance(health(), prey.health, speed_hi, prey.their_speed);
+            double chance = eatChance(health(), prey.health, speed_hi, prey.their_speed, true);
             double cur_weight = cos(prey.bearing - best_course)/prey.distance * (isAlgae(prey)? 1.0: chance);
             if(cur_weight > new_course_weight){
                 new_course_weight = cur_weight;
@@ -307,6 +319,7 @@ void zy2743::hunt(void) {
     hunt_event = new Event(next_hunt_time, [self](void) { self->hunt(); });
     
     if (((health() >= 4.0 && !cheatAlgae) || (health() >= 100.0 && cheatAlgae)) && count_avoid_when_reproduce <= 2) spawn();
-    if (health() >= 10.0 && cheatAlgae) isCheating = true;
-    if (health() < 10.0 && cheatAlgae) isCheating = false;
+    if (health() >= 10.0 && cheatAlgae) isFakingAlgae = true;
+    if (health() < 10.0 && cheatAlgae) isFakingAlgae = false;
+    isFakingEnemy = false;
 }

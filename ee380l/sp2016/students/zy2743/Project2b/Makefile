@@ -57,7 +57,7 @@ OBJS = $(CXXSRCS:.cpp=.o) $(CSRCS:.c=.o)
 all: $(PROGRAM)
 
 $(PROGRAM): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS) SuperLiviaYue.o YS8797.o Jeremy.o wz3585.o $(LIBS)
+	$(LD) $(LDFLAGS) -o $@ $(OBJS) SuperLiviaYue.o YS8797.o Jeremy.o wz3585.o yz9234.o $(LIBS)
 
 test: $(PROGRAM)
 	./$(PROGRAM)

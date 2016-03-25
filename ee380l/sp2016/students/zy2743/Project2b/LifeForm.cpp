@@ -52,9 +52,11 @@ void LifeForm::region_resize(void){
 
 void LifeForm::compute_next_move(void){
     if(!is_alive) return;
-    if(border_cross_event != nullptr)
+    if(border_cross_event != nullptr){
         border_cross_event->cancel();
-    if(speed > 0){
+        border_cross_event = nullptr;
+    }
+    if(speed > 0.0){
         SmartPointer<LifeForm> p{this};
         border_cross_event = new Event(space.distance_to_edge(pos, course)/speed+Point::tolerance, [p](void){p->border_cross();});
     }
@@ -119,6 +121,8 @@ void LifeForm::eat(SmartPointer<LifeForm> prey){
 
 void LifeForm::check_encounter(void){
     if(!is_alive) return;
+    for(auto& life: space.nearby(pos, encounter_distance * 2))
+        life->update_position();
     SmartPointer<LifeForm> candidate = space.closest(pos);
     if(candidate->update_time != Event::now())
         candidate->update_position();
@@ -203,6 +207,10 @@ void LifeForm::resolve_encounter(SmartPointer<LifeForm> life){
 void LifeForm::reproduce(SmartPointer<LifeForm> child){
     if(Event::now()-reproduce_time < min_reproduce_time || !is_alive)
         return;
+    
+    update_position();
+    if(!is_alive) return;
+    
     double next_energy = energy*0.5*(1-reproduce_cost);
     if(next_energy < min_energy){
         die();
@@ -215,7 +223,7 @@ void LifeForm::reproduce(SmartPointer<LifeForm> child){
         child->pos.xpos = pos.xpos + cos(drand48() * 2.0 * M_PI)*drand48()*reproduce_dist;
         nearest = space.closest(child->pos);
         i++;
-    }while(i<=5 && (nearest->position().distance(child->position()) <= encounter_distance || space.is_out_of_bounds(child->pos)));
+    }while(i<=5 && ((nearest && nearest->position().distance(child->position()) <= encounter_distance) || space.is_out_of_bounds(child->pos)));
     if(i > 5) return;
     energy = next_energy;
     child->energy = next_energy;
