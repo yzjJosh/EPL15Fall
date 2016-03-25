@@ -19,7 +19,7 @@ private:
     double bottom;
     double left;
     double right;
-    int no_target_count;
+    std::string name;
     
     static bool isAlgae(ObjInfo const&);
     static bool isFriend(ObjInfo const&);
@@ -36,7 +36,8 @@ private:
     void avoid_cross_bound(void);
     double max_move_time(void);
     Point get_pos(ObjInfo const&);
-
+   // void generate
+    
 public:
   zy2743(void);
   ~zy2743(void);

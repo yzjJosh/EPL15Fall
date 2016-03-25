@@ -15,9 +15,9 @@
 using namespace std;
 using String = std::string;
 
-double const zy2743::speed_lo = 2.01;
-double const zy2743::speed_hi = 7.01;
-double const zy2743::speed_delta = 0.00001;
+double const zy2743::speed_lo = 2.123456;
+double const zy2743::speed_hi = 7.123456;
+double const zy2743::speed_delta = 1e-7;
 String const zy2743::default_name = "Josh:";
 Initializer<zy2743> __zy2743_initializer;
 
@@ -35,7 +35,6 @@ zy2743::zy2743(void) {
     bottom = 0.0;
     left = 0.0;
     right = 0.0;
-    no_target_count = 0;
     
     SmartPointer<zy2743> self = SmartPointer<zy2743>(this);
     new Event(0, [self](void) { self->startup(); });
@@ -285,13 +284,8 @@ void zy2743::hunt(void) {
         set_speed(speed_hi);
         
         next_hunt_time = fmin(max_distance/get_speed()*1.1, max_move_time());
-        no_target_count = 0;
     }else{
         double new_course = get_course();
-        if(++no_target_count == 3){
-       //     new_course += M_PI_2;
-            no_target_count = 0;
-        }
         
         const double dodge_distance = 20.0;
         bool dodge = false;
