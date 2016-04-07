@@ -34,7 +34,7 @@ namespace epl{
     };
 
     template <typename T>
-    class vector {
+    class Vector {
     private:
         T* data;
         uint64_t length;
@@ -59,10 +59,10 @@ namespace epl{
             Elem* ptr;
             uint64_t version;
             uint64_t index;
-            const vector<T>* home;
+            const Vector<T>* home;
             
             void check_valid(void) const{
-                if(index > home->length)
+                if(index > home->length || (index == home->length && version != home->version))
                     throw invalid_iterator{invalid_iterator::SEVERE};
                 if(home->version != version){
                     if(version < home->reallocation_version)
@@ -76,8 +76,8 @@ namespace epl{
             
             friend const_iterator_helper;
             
-            iterator_helper(vector<T> const& home, const uint64_t index){
-                this->ptr = home.data + vector::getIndex(index, home.start, home.capacity);
+            iterator_helper(Vector<T> const& home, const uint64_t index){
+                this->ptr = home.data + Vector::getIndex(index, home.start, home.capacity);
                 this->version = home.version;
                 this->index = index;
                 this->home = &home;
@@ -91,12 +91,8 @@ namespace epl{
             iterator_helper<Elem> operator+ (const uint64_t step) const{
                 check_valid();
                 iterator_helper<Elem> res{*this};
-                res.ptr = home->data + vector::getIndex(res.index += step, home->start, home->capacity);
+                res.ptr = home->data + Vector::getIndex(res.index += step, home->start, home->capacity);
                 return res;
-            }
-            
-            friend iterator_helper<Elem> operator+(const uint64_t step, iterator_helper<Elem> const& it) {
-                return it + step;
             }
             
             iterator_helper<Elem> operator- (const uint64_t step) const{
@@ -105,13 +101,13 @@ namespace epl{
             
             iterator_helper<Elem>& operator+= (const uint64_t step) {
                 check_valid();
-                ptr = home->data + vector::getIndex(index += step, home->start, home->capacity);
+                ptr = home->data + Vector::getIndex(index += step, home->start, home->capacity);
                 return *this;
             }
             
             iterator_helper<Elem>& operator-= (const uint64_t step) {
                 check_valid();
-                ptr = home->data + vector::getIndex(index -= step, home->start, home->capacity);
+                ptr = home->data + Vector::getIndex(index -= step, home->start, home->capacity);
                 return *this;
             }
             
@@ -153,24 +149,12 @@ namespace epl{
                 if(home != that.home) return false;
                 return index < that.index;
             }
-            
-            Elem& operator[] (const uint64_t step) const{
-                return *(*this + step);
-            }
-            
-            Elem* operator->(void) const{
-                check_valid();
-                return ptr;
-            }
         
         };
         
-        
         class const_iterator_helper: public iterator_helper<const T>{
         private:
-        
-            template <typename It>
-            void copy(It const& that){
+            void copy(iterator const& that){
                 this->ptr = that.ptr;
                 this->index = that.index;
                 this->version = that.version;
@@ -178,21 +162,17 @@ namespace epl{
             }
             
         public:
-            const_iterator_helper(vector<T> const& home, const uint64_t index):
+            const_iterator_helper(Vector<T> const& home, const uint64_t index):
                 iterator_helper<const T>(home, index){}
             
-            template <typename It>
-            const_iterator_helper(It const& that):
-                iterator_helper<const T>(*that.home, that.index) {
+            const_iterator_helper(iterator const& that){
                 copy(that);
             }
             
-            template <typename It>
-            const_iterator_helper& operator= (It const& that){
+            const_iterator_helper& operator= (iterator const& that){
                 copy(that);
                 return *this;
             }
-            
             
         };
         
@@ -202,7 +182,7 @@ namespace epl{
             ::operator delete (array);
         }
         
-        void copy(vector<T> const & that){
+        void copy(Vector<T> const & that){
             length = that.length;
             capacity = that.capacity;
             data = (T*)::operator new (capacity*sizeof(T));
@@ -213,7 +193,7 @@ namespace epl{
                 new (data+i) T{that.data[getIndex(i, that.start, that.capacity)]};
         }
         
-        void move(vector<T>&& tmp){
+        void move(Vector<T>&& tmp){
             length = tmp.length;
             capacity = tmp.capacity;
             data = tmp.data;
@@ -250,13 +230,13 @@ namespace epl{
         }
         
         template <typename It>
-        vector(It begin, It end, std::forward_iterator_tag): vector(){
+        Vector(It begin, It end, std::forward_iterator_tag): Vector(){
             while(end != begin)
                 this->push_back(*(begin++));
         }
         
         template <typename It>
-        vector(It begin, It end, std::random_access_iterator_tag){
+        Vector(It begin, It end, std::random_access_iterator_tag){
             capacity = length = end - begin;
             data = (T*)::operator new (length*sizeof(T));
             start = 0;
@@ -268,11 +248,11 @@ namespace epl{
         
     public:
         
-        vector(void){
+        Vector(void){
             default_constructor();
         }
         
-        vector(uint64_t const n){
+        Vector(uint64_t const n){
             if(n == 0){
                 default_constructor();
                 return;
@@ -288,17 +268,17 @@ namespace epl{
         }
         
         template <typename It>
-        vector(It begin, It end): vector(begin, end, typename std::iterator_traits<It>::iterator_category{}) {}
+        Vector(It begin, It end): Vector(begin, end, typename std::iterator_traits<It>::iterator_category{}) {}
         
-        vector(std::initializer_list<T> list): vector(list.begin(), list.end()){}
+        Vector(std::initializer_list<T> list): Vector(list.begin(), list.end()){}
         
-        vector(vector<T> const & that){ copy(that); }
+        Vector(Vector<T> const & that){ copy(that); }
         
-        vector(vector<T>&& tmp){ move(std::move(tmp)); }
+        Vector(Vector<T>&& tmp){ move(std::move(tmp)); }
         
-        ~vector(void){ destroy(data, length, start, capacity); }
+        ~Vector(void){ destroy(data, length, start, capacity); }
         
-        vector<T>& operator=(vector<T> const & that){
+        Vector<T>& operator=(Vector<T> const & that){
             if(this != &that){
                 destroy(data, length, start, capacity);
                 copy(that);
@@ -306,7 +286,7 @@ namespace epl{
             return *this;
         }
         
-        vector<T>& operator=(vector<T>&& that){
+        Vector<T>& operator=(Vector<T>&& that){
             if(this != &that){
                 destroy(data, length, start, capacity);
                 move(std::move(that));
@@ -355,13 +335,13 @@ namespace epl{
         }
         
         void pop_back(void){
-            if(length == 0) throw std::out_of_range{"Unable to pop from empty vector!"};
+            if(length == 0) throw std::out_of_range{"Unable to pop from empty Vector!"};
             data[getIndex(--length, start, capacity)].~T();
             version ++;
         }
         
         void pop_front(void){
-            if(length == 0) throw std::out_of_range("Unable to pop from empty vector!");
+            if(length == 0) throw std::out_of_range("Unable to pop from empty Vector!");
             data[start].~T();
             start = getIndex(1, start, capacity);
             length--;

@@ -7,7 +7,7 @@ GTEST_LIB = $(GTEST_DIR)/lib/gtest_yosemite.a
 
 CXX = g++-4.9
 CXXFLAGS = -g -I $(GTEST_INC) -std=c++11 -Wall -Werror -fmax-errors=1 -Wno-sign-compare
-DEFS?= -DPHASE_C
+DEFS?= -DPHASE_A
 
 SRCS = $(shell ls *.cpp)
 OBJS = $(patsubst %.cpp, %.o, $(SRCS))

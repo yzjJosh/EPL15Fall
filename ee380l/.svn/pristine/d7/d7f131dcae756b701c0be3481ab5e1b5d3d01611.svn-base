@@ -62,7 +62,7 @@ namespace epl{
             const vector<T>* home;
             
             void check_valid(void) const{
-                if(index > home->length)
+                if(index > home->length || (index == home->length && version != home->version))
                     throw invalid_iterator{invalid_iterator::SEVERE};
                 if(home->version != version){
                     if(version < home->reallocation_version)
@@ -168,9 +168,7 @@ namespace epl{
         
         class const_iterator_helper: public iterator_helper<const T>{
         private:
-        
-            template <typename It>
-            void copy(It const& that){
+            void copy(iterator const& that){
                 this->ptr = that.ptr;
                 this->index = that.index;
                 this->version = that.version;
@@ -181,18 +179,14 @@ namespace epl{
             const_iterator_helper(vector<T> const& home, const uint64_t index):
                 iterator_helper<const T>(home, index){}
             
-            template <typename It>
-            const_iterator_helper(It const& that):
-                iterator_helper<const T>(*that.home, that.index) {
+            const_iterator_helper(iterator const& that){
                 copy(that);
             }
             
-            template <typename It>
-            const_iterator_helper& operator= (It const& that){
+            const_iterator_helper& operator= (iterator const& that){
                 copy(that);
                 return *this;
             }
-            
             
         };
         
