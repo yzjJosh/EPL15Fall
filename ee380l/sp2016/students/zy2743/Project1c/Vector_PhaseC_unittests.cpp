@@ -17,8 +17,15 @@
 #include "gtest/gtest.h"
 #include "Vector.h"
 
-using std::begin;
-using std::end;
+template <typename T>
+auto begin(T x) -> decltype(x.begin()){
+    return x.begin();
+}
+
+template <typename T>
+auto end(T x) ->decltype(x.end()){
+    return x.end();
+}
 
 /*****************************************************************************************/
 // Phase C Tests
@@ -34,36 +41,11 @@ TEST (PhaseC, direct_init_list) {
 #endif
 
 #if defined(PHASE_C0_1) | defined(PHASE_C)
-TEST (PhaseC, begin_vector) {
+TEST (PhaseC, beginvector) {
     epl::vector<int> x{ 1, 2, 3 };
     auto it = begin(x);
-    const auto& it2 = end(x);
-    //std::cout << *end(x) << std::endl;
+//    const auto& it2 = end(x);
     EXPECT_EQ(1, *it);
-    EXPECT_TRUE(end(x) == it2);
-}
-#endif
-
-#if defined(PHASE_C0_2) | defined(PHASE_C)
-TEST(PhaseC, RandIteOperations){
-    epl::vector<int> x{1, 2, 3, 4};
-    epl::vector<int>::const_iterator ite1 = x.begin();
-    EXPECT_EQ(*ite1, 1);
-    EXPECT_EQ(ite1[3], 4);
-    auto ite2(ite1);
-    EXPECT_TRUE(ite1 == ite2);
-    ite2 = ite2 + 1;
-    EXPECT_TRUE(ite1 < ite2);
-    ite2 += 1;
-    EXPECT_TRUE(ite1 < ite2);
-    ite1++; ++ite1;
-    EXPECT_TRUE(ite1 == ite2);
-    EXPECT_EQ(*ite1, 3);
-    --ite1; ite1--;
-    EXPECT_EQ(ite2 - ite1, 2);
-    ite2 = ite2 - 1;
-    ite2 -= 1;
-    EXPECT_EQ(ite2 - ite1, 0);
 }
 #endif
 
@@ -73,17 +55,18 @@ TEST(PhaseC, RandIteOperations){
 #if defined(PHASE_C1_0) | defined(PHASE_C)
 TEST (PhaseC1, range_for_loop) {
     epl::vector<int32_t> x(10);
-    
+
     int32_t k = 0;
     for (auto& v : x) {
         v = k++;
     }
-    
+
     const epl::vector<int32_t>& y = x;
     int32_t s = 0;
-    for (const auto& v : y)
+    for (const auto& v : y) {
         s += v;
-    
+    }
+
     EXPECT_EQ(45, s);
 }
 #endif
@@ -104,27 +87,11 @@ TEST(PhaseC1, invalid_iterator) {
 }
 #endif
 
-#if defined(PHASE_C1_2) | defined(PHASE_C)
-TEST(PhaseC1, RandIteConstructor){
-    epl::vector<int> x{1, 2, 3, 4};
-    epl::vector<int>::const_iterator ite1 = x.begin();
-    epl::vector<int>::const_iterator ite2 = x.begin();
-    ite1++; ite1++;
-    ite2 += 1;
-    
-    epl::vector<int> y(ite2, ite1);
-    
-    EXPECT_EQ(y[0], 2);
-    EXPECT_EQ(y.size(), 1);
-    EXPECT_THROW(y[1], std::out_of_range);
-}
-#endif
-
 /*****************************************************************************************/
 // Phase C** Tests
 /*****************************************************************************************/
 #if defined(PHASE_C2_0) | defined(PHASE_C)
-TEST (PhaseC2, ItrExceptSevere) {
+TEST (PhaseC2, ItrExceptMild1) {
     epl::vector<int> x(1);
     auto itr = x.begin();
     x.pop_back();
@@ -134,7 +101,7 @@ TEST (PhaseC2, ItrExceptSevere) {
         FAIL();
         *itr = a;
     } catch (epl::invalid_iterator ii) {
-        EXPECT_EQ(ii.level, epl::invalid_iterator::SEVERE);
+        EXPECT_EQ(epl::invalid_iterator::MILD, ii.level);
     } catch (...) {
         FAIL();
     }
@@ -150,7 +117,7 @@ TEST (PhaseC2, ItrExceptModerate) {
         *xi = 5;
         FAIL();
     } catch (epl::invalid_iterator ex) {
-        EXPECT_EQ(ex.level, epl::invalid_iterator::MODERATE);
+        EXPECT_EQ(epl::invalid_iterator::MODERATE, ex.level);
     } catch (...) {
         FAIL();
     }
@@ -168,70 +135,7 @@ TEST (PhaseC2, ItrExceptMild) {
         FAIL();
         *itr = a;
     } catch (epl::invalid_iterator ii) {
-        EXPECT_EQ(ii.level, epl::invalid_iterator::MILD);
-    } catch (...) {
-        FAIL();
-    }
-}
-#endif
-
-#if defined(PHASE_C2_3) | defined(PHASE_C)
-TEST (PhaseC2, ItrExceptMild2) {
-    
-    epl::vector<int> v {1, 2, 3};
-    auto ite = v.end();
-    v.pop_back();
-    try{
-        std::cout << *ite << std::endl;
-    } catch (epl::invalid_iterator ii) {
-        EXPECT_EQ(ii.level, epl::invalid_iterator::MILD);
-    } catch (...) {
-        FAIL();
-    }
-    
-}
-#endif
-
-#if defined(PHASE_C2_4) | defined(PHASE_C)
-TEST (PhaseC2, ItrExceptMild3) {
-    epl::vector<int> v {1, 2, 3};
-    auto ite = v.begin();
-    v.pop_front();
-    try{
-        std::cout << *ite << std::endl;
-    } catch (epl::invalid_iterator ii) {
-        EXPECT_EQ(ii.level, epl::invalid_iterator::MILD);
-    } catch (...) {
-        FAIL();
-    }
-    
-}
-#endif
-
-#if defined(PHASE_C2_5) | defined(PHASE_C)
-TEST (PhaseC2, ItrExceptSevere2) {
-    epl::vector<int> v {1, 2, 3};
-    auto ite = v.end() - 1;
-    v.pop_back();
-    try{
-        std::cout << *ite << std::endl;
-    } catch (epl::invalid_iterator ii) {
-        EXPECT_EQ(ii.level, epl::invalid_iterator::SEVERE);
-    } catch (...) {
-        FAIL();
-    }
-}
-#endif
-
-#if defined(PHASE_C2_6) | defined(PHASE_C)
-TEST (PhaseC2, ItrExceptSevere3) {
-    epl::vector<int> v {1}; // only one integer in the epl::vector
-    auto ite = v.begin();
-    v.pop_front();       // This line can do v.pop_back(). The result is the same.
-    try{
-        std::cout << *ite << std::endl;
-    } catch (epl::invalid_iterator ii) {
-        EXPECT_EQ(ii.level, epl::invalid_iterator::SEVERE);
+        EXPECT_EQ(epl::invalid_iterator::MILD, ii.level);
     } catch (...) {
         FAIL();
     }

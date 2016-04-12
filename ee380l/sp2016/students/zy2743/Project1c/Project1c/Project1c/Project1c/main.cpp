@@ -21,6 +21,7 @@ public:
     Foo(Foo&& that): constructor(that.constructor){}
 };
 
+
 int main(void) {
     epl::vector<int> v;
     assert(v.size() == 0);
@@ -274,9 +275,9 @@ int main(void) {
     assert(const_begin - const_end == -1);
     epl::vector<int>::const_iterator const_copy{const_begin-1};
     assert(const_copy - const_begin == -1);
-//    auto c = const_copy + 1;
-//    c = begin;
-//    assert(c == const_copy+1);
+    auto c = const_copy - 1;
+    c = begin;
+    assert(c == epl::vector<int>::const_iterator{begin});
     //begin = const_begin;
     v = {};
     assert(v.size() == 0);
@@ -413,7 +414,23 @@ int main(void) {
     assert(f[9].constructor == 7);
     assert((f.begin()+9)->constructor == 7);
     assert((((const epl::vector<Foo>&)f).begin()+9)->constructor == 7);
+    epl::vector<epl::vector<int>> emplace_test = {epl::vector<int>(1)};
+    assert(emplace_test[0][0] == 0);
+    emplace_test.emplace_back(emplace_test[0]);
+    assert(emplace_test.size() == 2);
+    assert(emplace_test[1][0] == 0);
+    v = epl::vector<int>{1,2,3,4,5};
+    begin = v.begin();
+    end = begin;
+    epl::vector<int>{std::move(v)};
+    try{
+        *begin;
+        assert(false);
+    }catch(epl::invalid_iterator e){}
+    try{
+        *end;
+        assert(false);
+    }catch(epl::invalid_iterator e){}
     std::cout<<"pass!"<<std::endl;
-    
     return 0;
 }

@@ -71,7 +71,6 @@ namespace epl{
                 }
             }
             
-            
             void copy(iterator const& that){
                 this->ptr = that.ptr;
                 this->index = that.index;
@@ -205,8 +204,8 @@ namespace epl{
             start = tmp.start;
             tmp.length = 0;
             tmp.data = nullptr;
-            tmp.reallocation_version = ++ tmp.version;
-            reallocation_version = ++ version;
+            version ++;
+            reallocation_version = version;
         }
         
         void resize(void){
@@ -277,17 +276,11 @@ namespace epl{
         
         vector(std::initializer_list<T> list): vector(list.begin(), list.end()){}
         
-        vector(vector<T> const & that){
-            copy(that);
-        }
+        vector(vector<T> const & that){ copy(that); }
         
-        vector(vector<T>&& tmp){
-            move(std::move(tmp));
-        }
+        vector(vector<T>&& tmp){ move(std::move(tmp)); }
         
-        ~vector(void){
-            destroy(data, length, start, capacity);
-        }
+        ~vector(void){ destroy(data, length, start, capacity); }
         
         vector<T>& operator=(vector<T> const & that){
             if(this != &that){
@@ -377,20 +370,10 @@ namespace epl{
         
         template <typename... Args>
         void emplace_back(Args&&... args){
+            T temp{std::forward<Args>(args)...};
             version ++;
-            if(length == capacity){
-                T* old_data = data;
-                uint64_t old_c = capacity;
-                capacity *= 2;
-                data = (T*)::operator new (capacity*sizeof(T));
-                new (data + getIndex(length++, start, capacity)) T{std::forward<Args>(args)...};
-                for(uint64_t i=0; i<length-1; i++)
-                    new (data+i) T{std::move(old_data[getIndex(i, start, old_c)])};
-                start = 0;
-                reallocation_version = version;
-                ::operator delete (old_data);
-            }else
-                new (data + getIndex(length++, start, capacity)) T{std::forward<Args>(args)...};
+            if(length == capacity) resize();
+            new (data + getIndex(length++, start, capacity)) T{std::move(temp)};
         }
     };
     
