@@ -1,42 +1,44 @@
 
 #include <iostream>
 #include <assert.h>
+#include <functional>
 #include "../../Valarray.h"
 
 using epl::valarray;
 using std::cout;
 using std::endl;
 using std::complex;
+using namespace epl;
 
 template <typename T>
-uint64_t size(T const&) { return UINT64_MAX; }
+uint64_t _size_(T const&) { return UINT64_MAX; }
 
 template <typename T>
-uint64_t size(valarray<T> const& array) { return array.size(); }
+uint64_t _size_(valarray<T> const& array) { return array.size(); }
 
 template <typename T>
-T get(T const& val, const uint64_t) { return val; }
+T _get_(T const& val, const uint64_t) { return val; }
 
 template <typename T>
-T get(valarray<T> const& array, const uint64_t k) { return array[k]; }
+T _get_(valarray<T> const& array, const uint64_t k) { return array[k]; }
 
 template <typename From, typename To>
-To typeCast(From const& from) {
+To _typeCast_(From const& from) {
     return from;
 }
 
 template <typename From, typename To>
-To typeCast(complex<int> const& from){
+To _typeCast_(complex<int> const& from){
     return To(from.real(), from.imag());
 }
 
 template <typename T>
-struct strip_const{
+struct _strip_const_{
     using type = T;
 };
 
 template <typename T>
-struct strip_const<const T>{
+struct _strip_const_<const T>{
     using type = T;
 };
 
@@ -44,13 +46,13 @@ template <typename T1, typename T2>
 void testPlus(T1 const& a, T2 const& b){
     auto c = a + b;
     using type = typename std::iterator_traits<decltype(c.begin())>::value_type;
-    uint64_t len = std::min(size(a), size(b));
+    uint64_t len = std::min(_size_(a), _size_(b));
     for(uint64_t i=0; i<len; i++){
-        auto item1 = get(a, i);
-        auto item2 = get(b, i);
-        using type1 = typename strip_const<decltype(item1)>::type;
-        using type2 = typename strip_const<decltype(item2)>::type;
-        assert(c[i] == (typeCast<type1, type>(item1) + typeCast<type2, type>(item2)));
+        auto item1 = _get_(a, i);
+        auto item2 = _get_(b, i);
+        using type1 = typename _strip_const_<decltype(item1)>::type;
+        using type2 = typename _strip_const_<decltype(item2)>::type;
+        assert(c[i] == (_typeCast_<type1, type>(item1) + _typeCast_<type2, type>(item2)));
     }
 }
 
@@ -58,13 +60,13 @@ template <typename T1, typename T2>
 void testMinus(T1 const& a, T2 const& b){
     auto c = a - b;
     using type = typename decltype(c)::valType;
-    uint64_t len = std::min(size(a), size(b));
+    uint64_t len = std::min(_size_(a), _size_(b));
     for(uint64_t i=0; i<len; i++){
-        auto item1 = get(a, i);
-        auto item2 = get(b, i);
-        using type1 = typename strip_const<decltype(item1)>::type;
-        using type2 = typename strip_const<decltype(item2)>::type;
-        assert(c[i] == (typeCast<type1, type>(item1) - typeCast<type2, type>(item2)));
+        auto item1 = _get_(a, i);
+        auto item2 = _get_(b, i);
+        using type1 = typename _strip_const_<decltype(item1)>::type;
+        using type2 = typename _strip_const_<decltype(item2)>::type;
+        assert(c[i] == (_typeCast_<type1, type>(item1) - _typeCast_<type2, type>(item2)));
     }
 }
 
@@ -72,13 +74,13 @@ template <typename T1, typename T2>
 void testMultiply(T1 const& a, T2 const& b){
     auto c = a * b;
     using type = typename decltype(c)::valType;
-    uint64_t len = std::min(size(a), size(b));
+    uint64_t len = std::min(_size_(a), _size_(b));
     for(uint64_t i=0; i<len; i++){
-        auto item1 = get(a, i);
-        auto item2 = get(b, i);
-        using type1 = typename strip_const<decltype(item1)>::type;
-        using type2 = typename strip_const<decltype(item2)>::type;
-        assert(c[i] == (typeCast<type1, type>(item1) * typeCast<type2, type>(item2)));
+        auto item1 = _get_(a, i);
+        auto item2 = _get_(b, i);
+        using type1 = typename _strip_const_<decltype(item1)>::type;
+        using type2 = typename _strip_const_<decltype(item2)>::type;
+        assert(c[i] == (_typeCast_<type1, type>(item1) * _typeCast_<type2, type>(item2)));
     }
 }
 
@@ -86,20 +88,51 @@ template <typename T1, typename T2>
 void testDevide(T1 const& a, T2 const& b){
     auto c = a / b;
     using type = typename decltype(c)::valType;
-    uint64_t len = std::min(size(a), size(b));
+    uint64_t len = std::min(_size_(a), _size_(b));
     for(uint64_t i=0; i<len; i++){
-        auto item1 = get(a, i);
-        auto item2 = get(b, i);
-        using type1 = typename strip_const<decltype(item1)>::type;
-        using type2 = typename strip_const<decltype(item2)>::type;
-        assert(c[i] == (typeCast<type1, type>(item1) / typeCast<type2, type>(item2)));
+        auto item1 = _get_(a, i);
+        auto item2 = _get_(b, i);
+        using type1 = typename _strip_const_<decltype(item1)>::type;
+        using type2 = typename _strip_const_<decltype(item2)>::type;
+        assert(c[i] == (_typeCast_<type1, type>(item1) / _typeCast_<type2, type>(item2)));
     }
 }
 
+template <typename T>
+void testSum(valarray<T> array){
+    T sum(0);
+    for(auto& x: array)
+        sum += x;
+    assert(sum == array.sum());
+}
+
+
+template <typename T, typename Fun>
+void testAccumulate(valarray<T> array, Fun fun){
+    if(array.size() < 2) return;
+    T res(fun(array[0], array[1]));
+    for(int i=2; i<array.size(); i++)
+        res = fun(res, array[i]);
+    assert(res == array.accumulate(fun));
+}
+
+template <typename T>
+T fun1(T const& x, T const& y){ return x+y; }
+
+template <typename T>
+T fun2(T const& x, T const& y){ return x*y; }
+
+template <typename T>
+T fun3(T const& x, T const& y) {return x*T(2)+y*y+x*y; }
+
+template <typename T>
+T fun4(T& x, T const& y) {return std::sin(x+y);}
+
+
 int main(void) {
     valarray<int> a{-1, 1, 2, 3, 4, 5, 6, -3, 56, 90, -4};
-    valarray<double> b{2.5, 2.5, 2.5, 2.5, -0.2, 0.5, 1.43, 3.1415926};
-    valarray<float> c{0.1f, 8.3f, -3.4f, 1.0f, 4.3f, 1.3f, -0.1f, 0.0003f, 343.98f};
+    valarray<float> b{0.1f, 8.3f, -3.4f, 1.0f, 4.3f, 1.3f, -0.1f, 0.0003f, 343.98f};
+    valarray<double> c{2.5, 2.5, 2.5, 2.5, -0.2, 0.5, 1.43, 3.1415926};
     valarray<complex<int>> d{ complex<int>(3, -1), complex<int>(-3, 0), complex<int>(0, 1)};
     valarray<complex<float>> e{ complex<float>(0.0f, 1.1f), complex<float>(1.2f, -2.3f), complex<float>(2.8, 1.9)};
     valarray<complex<double>> f{ complex<double>(0.0, -3.2), complex<double>(1.3), complex<double>(1.565673, 34343)};
@@ -310,7 +343,51 @@ int main(void) {
     testDevide(-2.7, f);
     testDevide(f, 4);
     testDevide(4, f);
+    
+    testSum(a);
+    testSum(b);
+    testSum(c);
+    testSum(d);
+    testSum(e);
+    testSum(f);
+    
+    testAccumulate(a, fun1<int>);
+    testAccumulate(a, fun2<int>);
+    testAccumulate(a, fun3<int>);
+    testAccumulate(a, fun4<int>);
+    
+    testAccumulate(b, fun1<float>);
+    testAccumulate(b, fun2<float>);
+    testAccumulate(b, fun3<float>);
+    testAccumulate(b, fun4<float>);
+    
+    testAccumulate(c, fun1<double>);
+    testAccumulate(c, fun2<double>);
+    testAccumulate(c, fun3<double>);
+    testAccumulate(c, fun4<double>);
+    
+    testAccumulate(d, fun1<complex<int>>);
+    testAccumulate(d, fun2<complex<int>>);
+    testAccumulate(d, fun3<complex<int>>);
+    testAccumulate(d, fun4<complex<int>>);
+    
+    testAccumulate(e, fun1<complex<float>>);
+    testAccumulate(e, fun2<complex<float>>);
+    testAccumulate(e, fun3<complex<float>>);
+    testAccumulate(e, fun4<complex<float>>);
+    
+    testAccumulate(f, fun1<complex<double>>);
+    testAccumulate(f, fun2<complex<double>>);
+    testAccumulate(f, fun3<complex<double>>);
+    testAccumulate(f, fun4<complex<double>>);
 
+    cout << a << endl;
+    cout << b << endl;
+    cout << c << endl;
+    cout << d << endl;
+    cout << e << endl;
+    cout << f << endl;
+    
     cout << "pass!" << endl;
     return 0;
 }
