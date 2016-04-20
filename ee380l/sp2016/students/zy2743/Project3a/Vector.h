@@ -269,7 +269,7 @@ namespace epl{
             version = 0;
             reallocation_version = 0;
             for(uint64_t i=0; i<n; i++)
-                new (data+i) T;
+                new (data+i) T{};
         }
         
         template <typename It>
