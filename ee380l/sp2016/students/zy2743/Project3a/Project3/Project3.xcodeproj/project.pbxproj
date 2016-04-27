@@ -44,8 +44,8 @@
 		03688EDB1CBC18DC00C55E08 = {
 			isa = PBXGroup;
 			children = (
-				03688EF01CBC197300C55E08 /* Vector.h */,
 				03688EEE1CBC191500C55E08 /* InstanceCounter.h */,
+				03688EF01CBC197300C55E08 /* Vector.h */,
 				03688EEF1CBC191500C55E08 /* Valarray.h */,
 				03688EE61CBC18DD00C55E08 /* Project3 */,
 				03688EE51CBC18DD00C55E08 /* Products */,

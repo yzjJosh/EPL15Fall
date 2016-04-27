@@ -2,17 +2,18 @@ GTEST_DIR = ../../../gtest
 GTEST_INC = $(GTEST_DIR)/include
 
 #choose based on system
-GTEST_LIB = $(GTEST_DIR)/lib/gtest_yosemite.a
+GTEST_LIB = $(GTEST_DIR)/lib/gtest64.a          #class virtual machine uses this
 #GTEST_LIB = $(GTEST_DIR)/lib/gtest32.a
+#GTEST_LIB = $(GTEST_DIR)/lib/gtest_yosemite.a  #for Apple users
 
-CXX = g++-4.9
-CXXFLAGS = -g -I $(GTEST_INC) -std=c++11 -Wall -Werror -fmax-errors=1 -Wno-sign-compare
-DEFS?= -DPHASE_B
+CXX = g++
+CXXFLAGS = -g -I $(GTEST_INC) -std=c++11 -Werror #-fmax-errors=1 #-Wall -Wno-sign-compare -Werror -fmax-errors=1
+DEFS?= -DPHASE_A -DPHASE_B
 
 SRCS = $(shell ls *.cpp)
 OBJS = $(patsubst %.cpp, %.o, $(SRCS))
 DEPS = $(patsubst %.cpp, %.d, $(SRCS))
-TEST = vector_unittest
+TEST = valarray_unittest
 
 all: $(TEST)
 
@@ -33,4 +34,4 @@ $(TEST): $(OBJS)
 #<\Automatic Dependency Generation>
 
 clean:
-	-rm -rf *.o *d $(TEST) 
+	-rm -rf *.o *d $(TEST)

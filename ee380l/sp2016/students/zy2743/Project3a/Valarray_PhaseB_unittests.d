@@ -1,5 +1,6 @@
-Valarray_PhaseA_unittests.o: Valarray_PhaseA_unittests.cpp Valarray.h \
- Vector.h InstanceCounter.h ../../../gtest/include/gtest/gtest.h \
+Valarray_PhaseB_unittests.o: Valarray_PhaseB_unittests.cpp \
+ InstanceCounter.h Valarray.h Vector.h \
+ ../../../gtest/include/gtest/gtest.h \
  ../../../gtest/include/gtest/internal/gtest-internal.h \
  ../../../gtest/include/gtest/internal/gtest-port.h \
  ../../../gtest/include/gtest/gtest-message.h \
